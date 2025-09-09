@@ -26,13 +26,25 @@ public_users.post("/register", (req,res) => {
 });
 
 // Get the book list available in the shop
+
+function get_books() {
+    return new Promise((resolve, reject) => {
+        resolve(books);
+        //reject(new Error("dont wanna"))
+    });
+}
+
 public_users.get('/',function (req, res) {
   //Write your code here
       // Send JSON response with formatted friends data
-      return res.send(JSON.stringify(books,null,4));
+      get_books().then(
+        (books) => res.status(200).send(JSON.stringify(books, null, 4)),
+        (error) =>
+            res.status(404).send("Unable to retrieve all books "+error.message)
+      );
 });
 
-// Get book details based on ISBN
+
 public_users.get('/isbn/:isbn',function (req, res) {
   //Write your code here
     let isbn = req.params.isbn;
