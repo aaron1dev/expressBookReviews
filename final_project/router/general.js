@@ -108,21 +108,34 @@ public_users.get('/author/:author',function (req, res) {
 });
 
 // Get all books based on title
-public_users.get('/title/:title',function (req, res) {
-  //Write your code here
-    let title = req.params.title;
-    if(title)
-    {
+function get_by_title(title) {
+    return new Promise((resolve, reject) => {
+
         let book = [];
 
         Object.keys(books)
             .filter((k) => books[k].title == title)
             .forEach(k => book.push(books[k]));
 
-        return res.send(JSON.stringify(book,null,4));
-    }
+        if(book.length > 0)
+        {
+            resolve(book);
+        }
+        else
+        {
+            reject(new Error("Unable to find book by title "+title))
+        }
+    });
+}
 
-    return res.status(404).json({message: "Title not found"});
+public_users.get('/title/:title',function (req, res) {
+  //Write your code here
+    let title = req.params.title;
+    
+    get_by_title(title).then(
+        (book) => res.status(200).send(JSON.stringify(book, null, 4)),
+        (err) => res.status(404).send(err.message)
+      );
 });
 
 //  Get book review
