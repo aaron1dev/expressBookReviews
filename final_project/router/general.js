@@ -53,9 +53,6 @@ public_users.get('/isbn/:isbn',function (req, res) {
 public_users.get('/author/:author',function (req, res) {
   //Write your code here
     let author = req.params.author;
-
-    
-
     if(author)
     {
         let hisBooks = [];
@@ -73,7 +70,19 @@ public_users.get('/author/:author',function (req, res) {
 // Get all books based on title
 public_users.get('/title/:title',function (req, res) {
   //Write your code here
-  return res.status(300).json({message: "Yet to be implemented"});
+    let title = req.params.title;
+    if(title)
+    {
+        let book = [];
+
+        Object.keys(books)
+            .filter((k) => books[k].title == title)
+            .forEach(k => book.push(books[k]));
+
+        return res.send(JSON.stringify(book,null,4));
+    }
+
+    return res.status(404).json({message: "Title not found"});
 });
 
 //  Get book review
