@@ -62,8 +62,52 @@ regd_users.post("/login", (req,res) => {
 // Add a book review
 regd_users.put("/auth/review/:isbn", (req, res) => {
   //Write your code here
-  return res.status(300).json({message: "Yet to be implemented"});
+  let isbn = req.params.isbn;
+    
+  if(isbn)
+  {
+    book = books[isbn];
+
+    if(book)
+    {
+        let username = req.session.authorization.username;
+        
+        book.reviews[username] = req.body.review;
+        
+        return res.status(200).json({message: "review updated"});
+    }
+
+    //return res.send(JSON.stringify(books[isbn].reviews,null,4));
+  }
+
+
+  return res.status(404).json({message: "Unable to find book"});
 });
+
+// Add a book review
+regd_users.delete("/auth/review/:isbn", (req, res) => {
+    //Write your code here
+    let isbn = req.params.isbn;
+      
+    if(isbn)
+    {
+      book = books[isbn];
+  
+      if(book)
+      {
+          let username = req.session.authorization.username;
+          
+          delete book.reviews[username];
+          
+          return res.status(200).json({message: "review deleted"});
+      }
+  
+      //return res.send(JSON.stringify(books[isbn].reviews,null,4));
+    }
+  
+  
+    return res.status(404).json({message: "Unable to find book"});
+  });
 
 module.exports.authenticated = regd_users;
 module.exports.isValid = isValid;
